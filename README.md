@@ -1,2 +1,2 @@
-seefood    
-협업 노션 :[ https://horn-politician-4dd.notion.site/Front-end-bfaacf6c3dd14f0b9c9bad4255b7967a](https://horn-politician-4dd.notion.site/See-Food-3f1f294e77c44b23bfd31bbbfb8f6744)
+2022 SW 프로젝트 See Food
+벡엔드 연동 X, 임시로 디자인만 배포해 놓은 것
