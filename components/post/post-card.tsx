@@ -25,7 +25,7 @@ const PostCard = ({ postData, showLike = true }: Props) => {
   const router = useRouter();
   const isLogin = getCookie("accessToken");
   const [isLike, setIsLike] = useState(postData.isLike);
-  const [isActive, setIsActive] = useState(false);
+  const [isActive, setIsActive] = useState(postData.isLike);
 
   const { likeMutation, unLikeMutation } = useLike({ setIsLike });
 

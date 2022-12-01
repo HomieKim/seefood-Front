@@ -22,7 +22,7 @@ const useLike = ({ setIsLike }: Props) => {
       });
       queryClient.invalidateQueries({
         queryKey: ["boardList"],
-        refetchActive: false,
+        refetchInactive: true,
       });
     },
   });
@@ -40,7 +40,7 @@ const useLike = ({ setIsLike }: Props) => {
       });
       queryClient.invalidateQueries({
         queryKey: ["boardList"],
-        refetchActive: false,
+        refetchInactive: true,
       });
     },
   });

@@ -21,7 +21,7 @@ const MainPage: NextPageWithLayout = () => {
   const { boardList, isLoading, readToLoad } = useGetBoard({
     inView,
   });
-
+  if (isLoading) return null;
   return (
     <>
       <SearchBar
