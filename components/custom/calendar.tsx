@@ -11,6 +11,7 @@ import styles from "styles/custom/calendar.module.scss";
 const CustomCalendar = () => {
   const [value, onChange] = useState(new Date());
   const [nowDate, setNowDate] = useState(new Date());
+  const [modalImg, setModalImg] = useState<string[]>([]);
   // 벡엔드에서 유저 정보 불러옴
   const [selectedDate, setSelectedDate] = useState({});
   const { isOpen, onClose, setIsOpen } = useModal();
@@ -32,7 +33,10 @@ const CustomCalendar = () => {
     const day = dayjs(value); // value를 date 객체로 변환
     setSelectedDate(day);
     setIsOpen(true);
-    console.log("click Day!!", day);
+
+    const targetDate = day.format("YYYY.MM.DD");
+    const findData = data?.dateInfoList?.find((v) => v.date === targetDate);
+    setModalImg(findData?.dietImageList!);
   };
   console.log("v month : ", value.getMonth() + 1);
   console.log("v year : ", value.getFullYear());
@@ -80,7 +84,12 @@ const CustomCalendar = () => {
           return false;
         }}
       />
-      <DateModal show={isOpen} close={onClose} date={selectedDate} />
+      <DateModal
+        show={isOpen}
+        close={onClose}
+        date={selectedDate}
+        imgList={modalImg}
+      />
     </div>
   );
 };

@@ -91,7 +91,7 @@ const UploadForm = () => {
       <h4>식사 시간</h4>
       <UploadCategory />
       <hr />
-      <h4 className={styles.select}>
+      {/* <h4 className={styles.select}>
         <span>음식 선택</span>
         <section>
           {selectFoods.map((v, i) => {
@@ -106,7 +106,7 @@ const UploadForm = () => {
           <RightArrow />
         </span>
       </h4>
-      <hr />
+      <hr /> */}
       <h4>
         해쉬태그 등록 <span className={styles.caution}>(최대 8글자)</span>
       </h4>

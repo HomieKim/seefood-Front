@@ -40,8 +40,7 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
       new QueryClient({
         defaultOptions: {
           queries: {
-            staleTime: Infinity,
-            refetchOnMount: false,
+            refetchOnMount: true,
             refetchOnWindowFocus: false,
             refetchOnReconnect: false,
             retry: 1,
@@ -58,7 +57,7 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
           <QueryClientProvider client={queryClient}>
             <Hydrate state={pageProps.dehydratedState}>
               <Component {...pageProps} />
-              <ReactQueryDevtools initialIsOpen={false} />
+              {/* <ReactQueryDevtools initialIsOpen={false} /> */}
             </Hydrate>
           </QueryClientProvider>
         </RecoilRoot>

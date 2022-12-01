@@ -67,7 +67,11 @@ const ProfileDetail: NextPageWithLayout = () => {
                 <CircularProgressbar
                   value={value}
                   maxValue={parseInt(userData?.userKcal as string)}
-                  text={`${userData?.todayKcal as number} Cal`}
+                  text={`${
+                    userData?.todayKcal === null
+                      ? 0
+                      : (userData?.todayKcal as number)
+                  } Cal`}
                   styles={buildStyles({
                     textColor: caution ? "#E95733" : "var(--primary)",
                     pathColor: caution ? "#E95733" : "var(--primary)",
@@ -76,9 +80,9 @@ const ProfileDetail: NextPageWithLayout = () => {
               )}
             </CustomProgress>
           </div>
-          <div>{`${userData?.todayKcal as number} / ${parseInt(
-            userData?.userKcal as string
-          )} Cal`}</div>
+          <div>{`${
+            userData?.todayKcal === null ? 0 : (userData?.todayKcal as number)
+          } / ${parseInt(userData?.userKcal as string)} Cal`}</div>
         </div>
       </section>
       <CategorySection />

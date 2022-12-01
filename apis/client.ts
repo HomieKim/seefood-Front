@@ -2,11 +2,11 @@ import { getCookie } from "cookies-next";
 import axios from "axios";
 
 const client = axios.create({
-  baseURL: "http://13.124.122.113:8080/api",
+  baseURL: "https://seefood.site/api",
   withCredentials: true,
 });
 const clientNotToken = axios.create({
-  baseURL: "http://13.124.122.113:8080/api",
+  baseURL: "https://seefood.site/api",
   withCredentials: true,
 });
 
