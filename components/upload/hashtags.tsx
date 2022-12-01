@@ -2,23 +2,21 @@ import useInput from "hooks/use-input";
 import React, { KeyboardEvent, MouseEvent, useRef, useState } from "react";
 import Xmark from "public/icons/Xmark.svg";
 import styles from "styles/upload/hashtag.module.scss";
-import { RootState } from "reducer";
-import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
-import uploadSlice from "reducer/upload";
+import { useRecoilState } from "recoil";
+import { tagsAtom } from "recoils/upload";
 
 const Hashtags = () => {
   const [tagInput, onChangeTagInput, setTagInput] = useInput("");
-  const { tags } = useSelector((state: RootState) => state.upload);
-  const dispatch = useDispatch();
+  const [tags, setTags] = useRecoilState(tagsAtom);
+  // const { tags } = useSelector((state: RootState) => state.upload);
   const inputRef = useRef<HTMLInputElement>(null);
   const onKeyUp = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
-      if(tags.includes(tagInput)) {
+      if (tags.includes(tagInput)) {
         setTagInput("");
         return;
       } // 같은 값은 추가 안되게
-      dispatch(uploadSlice.actions.addTag(tagInput));
+      setTags((tags) => [...tags, tagInput]);
       setTagInput("");
       setTimeout(() => {
         inputRef.current!.scrollIntoView({ behavior: "smooth" });
@@ -28,9 +26,9 @@ const Hashtags = () => {
   const DeleteTag = (e: MouseEvent<HTMLSpanElement>) => {
     if (e.currentTarget === e.target) return; // x 아이콘 눌렀을 때만 이벤트 적용
     const targetTag = e.currentTarget.innerText.substring(2);
-    dispatch(uploadSlice.actions.deleteTag(targetTag));
+    setTags((tags) => tags.filter((tag) => tag !== targetTag));
   };
-
+  console.log("tags : ", tags);
   return (
     <ul className={styles["tag-wrapper"]}>
       {tags?.map((tag, i) => (

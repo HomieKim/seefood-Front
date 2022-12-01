@@ -2,25 +2,23 @@ import React, { useCallback } from "react";
 import { RankUser } from "types/user";
 import styles from "styles/challenge/rank.module.scss";
 import Image from "next/image";
-import { useDispatch } from "react-redux";
-import selectedSlice from "reducer/selectId";
-import { useSelector } from "react-redux";
-import { RootState } from "reducer";
+import { useRecoilState } from 'recoil';
+import { selectedId } from 'recoils/selectId';
 
 interface Props {
   userData: RankUser;
 }
 const RankItem = ({ userData }: Props) => {
-  const { seletedId } = useSelector((state: RootState) => state.selected);
-  const dispatch = useDispatch();
+  const [selectedRankId, setSelectedRankId] = useRecoilState(selectedId);
+  
   console.log(userData);
   const onSelectBox = useCallback(() => {
-    dispatch(selectedSlice.actions.selectId(userData.id));
-  }, [dispatch]);
+    setSelectedRankId(userData.id);
+  }, [setSelectedRankId]);
   return (
     <div
       className={
-        userData.id === Number(seletedId)
+        userData.id === selectedRankId
           ? `${styles.box} ${styles.selected}`
           : styles.box
       }

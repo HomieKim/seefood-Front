@@ -4,7 +4,13 @@ import styles from "styles/layout.module.scss";
 import BackIcon from "public/icons/back.svg";
 const BackButton = ({ color }: { color: string }) => {
   const router = useRouter();
-  const onBack = useCallback(() => router.back(), [router]);
+  const onBack = useCallback(() => {
+    if (router.pathname === "/login") {
+      router.push("/");
+    } else {
+      router.back();
+    }
+  }, [router]);
 
   return (
     <div onClick={onBack} className={styles.back}>

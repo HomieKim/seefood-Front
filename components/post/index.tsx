@@ -1,21 +1,20 @@
-import { postList } from 'dummy';
-import React from 'react';
-import styles from 'styles/post/post.module.scss';
-import PostCard from './post-card';
+import React from "react";
+import styles from "styles/post/post.module.scss";
+import { PostResponse } from "types/post";
+import PostCard from "./post-card";
 
+interface Props {
+  data: Array<PostResponse>;
+}
 
-
-const PostList = () => {
-  /* 벡엔드에서 포스트 리스트 가져와야 함 */
-  const postData = postList;
+const PostList = ({ data }: Props) => {
   return (
     <div className={styles.wrapper}>
-      {
-        postData.map((v, i)=>  <PostCard  key={i} postData={v}/>)
-      }
-     
+      {data.map((v, i) => (
+        <PostCard key={i} postData={v} />
+      ))}
     </div>
-  )
-}
+  );
+};
 
 export default PostList;

@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useRouter } from "next/router";
 import React, {
   Dispatch,
@@ -7,14 +8,11 @@ import React, {
   useState,
 } from "react";
 import styles from "styles/custom/pop-up.module.scss";
-import { User } from "types/user";
 import ProfileImage from "./profile-image";
 const ProfilePopUp = ({
-  userData,
   setPopup,
   setModal,
 }: {
-  userData: User;
   setPopup: Dispatch<SetStateAction<boolean>>;
   setModal: Dispatch<SetStateAction<boolean>>;
 }) => {
@@ -23,7 +21,13 @@ const ProfilePopUp = ({
     setModal(true);
     setPopup((prev) => !prev);
   }, []);
-
+  const [nickname, setNickName] = useState("");
+  useEffect(() => {
+    const name = localStorage.getItem("username");
+    if (name) {
+      setNickName(name);
+    }
+  }, []);
   return (
     <div
       onClick={(e: MouseEvent<HTMLDivElement>) => e.stopPropagation()}
@@ -31,7 +35,7 @@ const ProfilePopUp = ({
     >
       <section>
         <ProfileImage size={20} />
-        <h4>{userData.nickname}</h4>
+        <h4>{nickname}</h4>
       </section>
       <hr />
       <button onClick={() => router.push("/profile")}>프로필 보기</button>

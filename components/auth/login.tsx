@@ -1,16 +1,55 @@
+import { signInAPI } from "apis/user";
 import CustomInput from "components/custom/input";
+import { setCookie } from "cookies-next";
+import useInput from "hooks/use-input";
 import Image from "next/image";
-import Link from 'next/link';
-import React from "react";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import React, { useCallback } from "react";
+import { useQueryClient } from "react-query";
 import styles from "styles/auth.module.scss";
 
 const LoginForm = () => {
+  const router = useRouter();
+  const queryClient = useQueryClient();
+  const [email, onChangeEmail] = useInput("");
+  const [password, onChangePassword] = useInput("");
+  const onSubmit = useCallback(
+    (e) => {
+      e.preventDefault();
+      signInAPI({ email: email, password: password }).then((res) => {
+        const { data } = res;
+        localStorage.setItem("userId", data.userId);
+        const accessToken = data.accessToken;
+        const refreshToken = data.refreshToken;
+        setCookie("accessToken", accessToken);
+        setCookie("refreshToken", refreshToken);
+        queryClient.invalidateQueries(["boardList"]);
+        router.replace("/");
+      });
+    },
+    [email, password]
+  );
   return (
     <>
       <form>
-        <CustomInput inputType="text" placeHolderMessage="이메일 입력" />
-        <CustomInput inputType="password" placeHolderMessage="비밀 번호 입력" />
-        <button type="submit" className={styles["login-button"]}>
+        <CustomInput
+          inputType="text"
+          value={email}
+          onChange={onChangeEmail}
+          placeHolderMessage="이메일 입력"
+        />
+        <CustomInput
+          inputType="password"
+          value={password}
+          onChange={onChangePassword}
+          placeHolderMessage="비밀 번호 입력"
+        />
+        <button
+          type="submit"
+          onClick={onSubmit}
+          className={styles["login-button"]}
+        >
           로그인
         </button>
       </form>

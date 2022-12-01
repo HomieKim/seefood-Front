@@ -1,13 +1,17 @@
+import { signUpAPI } from "apis/user";
 import CustomInput from "components/custom/input";
 import useInput from "hooks/use-input";
+import { useRouter } from "next/router";
 import React, { ChangeEvent, useCallback, useState } from "react";
 import styles from "styles/auth.module.scss";
 
 const SignUpForm = () => {
-  const [email, onChangeEmail] = useInput("");
-  const [nickname, onChangeNickname] = useInput("");
-  const [password, onChangePassword] = useInput("");
-  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+  const [email, onChangeEmail] = useInput<string>("");
+  const [nickname, onChangeNickname] = useInput<string>("");
+  const [password, onChangePassword] = useInput<string>("");
+  const [height, onChangeHeight] = useInput<string>("");
+  const [weight, onChangeWeight] = useInput<string>("");
 
   const [passwordChk, setPasswordChk] = useState("");
   const [passwordError, setPasswordError] = useState(false);
@@ -26,9 +30,22 @@ const SignUpForm = () => {
     [passwordChk]
   );
 
-  const onSubmit = useCallback((e) => {
-    e.preventDefault();
-  }, []);
+  const onSubmit = useCallback(
+    (e) => {
+      e.preventDefault();
+      signUpAPI({
+        email,
+        password,
+        username: nickname,
+        height: parseInt(height),
+        weight: parseInt(weight),
+      }).then((res) => {
+        console.log(res);
+        router.replace("/login");
+      });
+    },
+    [email, password, height, weight, passwordChk, nickname]
+  );
   return (
     <>
       <form>
@@ -72,11 +89,15 @@ const SignUpForm = () => {
         <div className={styles.user}>
           <CustomInput
             inputType="text"
+            value={height}
+            onChange={onChangeHeight}
             placeHolderMessage="키 입력"
           />
           <span>cm</span>
           <CustomInput
             inputType="text"
+            value={weight}
+            onChange={onChangeWeight}
             placeHolderMessage="몸무게 입력"
           />
           <span>kg</span>

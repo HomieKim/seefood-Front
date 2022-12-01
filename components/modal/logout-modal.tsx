@@ -3,13 +3,17 @@ import React, { useCallback } from "react";
 import ModalLayout from "./modal-layout";
 import LogoutIcon from "public/icons/logout.svg";
 import styles from "styles/modal/logout-modal.module.scss";
+import { deleteCookie } from "cookies-next";
 
 const LogoutModal = ({ show, close }: { show: boolean; close: () => void }) => {
   const router = useRouter();
   const logoutRequest = useCallback(() => {
+    deleteCookie("accessToken");
+    deleteCookie("refreshToken");
+    localStorage.removeItem("userId");
     console.log("로그아웃 벡엔드에 요청");
     close();
-    router.replace("/");
+    router.push("/login");
   }, []);
   return (
     <ModalLayout show={show} close={close}>

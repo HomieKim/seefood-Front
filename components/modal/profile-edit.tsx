@@ -1,12 +1,10 @@
 import React from "react";
-import { useSelector } from "react-redux";
-import { RootState } from "reducer";
 import ModalLayout from "./modal-layout";
 import styles from "styles/modal/profile-edit.module.scss";
 import CustomInput from "components/custom/input";
 import useInput from 'hooks/use-input';
-import { useDispatch } from 'react-redux';
-import profileSlice from 'reducer/profile';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { heightAtom, nickNameAtom, weightAtom } from 'recoils/profile';
 
 const ProfileEditModal = ({
   show,
@@ -16,17 +14,17 @@ const ProfileEditModal = ({
   close: () => void;
 }) => {
   if (!show) return null;
-  const { nickname, height, weight } = useSelector(
-    (state: RootState) => state.profile
-  );
-  const dispatch = useDispatch();
+  const [nickname, setNickname] = useRecoilState(nickNameAtom);
+  const [weight, setWeight] = useRecoilState(weightAtom);
+  const [height, setHeight] = useRecoilState(heightAtom);
+  
   const [editNickName, onChangeNickname] = useInput(nickname);
   const [editHeight, onChangeHeight] = useInput(height.toString());
   const [editWeight, onChangeWeight] = useInput(weight.toString());
   const onEdit = () => {
-    dispatch(profileSlice.actions.setNickname(editNickName));
-    dispatch(profileSlice.actions.setHeight(editHeight));
-    dispatch(profileSlice.actions.setWeight(editWeight));
+    setNickname(editNickName);
+    setHeight(Number(editHeight));
+    setWeight(Number(editWeight));
     close();
   }
   return (

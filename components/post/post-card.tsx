@@ -1,64 +1,82 @@
 import React, { useCallback, useState } from "react";
 import styles from "styles/post/post.module.scss";
-import { Post } from "types/post";
+import { Post, PostResponse } from "types/post";
 import PostImage from "./post-image";
-import gravatar from "gravatar";
 import HeartIcon from "public/icons/heartColored.svg";
 import BlankHeartIcon from "public/icons/heart.svg";
-import ProfileImage from 'components/custom/profile-image';
+import ProfileImage from "components/custom/profile-image";
+import { getCookie } from "cookies-next";
+import LikeButton from "components/custom/like-button";
+import { useRouter } from "next/router";
+import useLike from "hooks/use-like";
+
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+import "dayjs/locale/ko";
+dayjs.locale("ko");
+dayjs.extend(relativeTime);
 
 interface Props {
-  postData: Post;
+  postData: PostResponse;
+  showLike?: boolean;
 }
 
-const PostCard = ({ postData }: Props) => {
-  const [isLike, setIsLike] = useState(false);
+const PostCard = ({ postData, showLike = true }: Props) => {
+  const router = useRouter();
+  const isLogin = getCookie("accessToken");
+  const [isLike, setIsLike] = useState(postData.isLike);
   const [isActive, setIsActive] = useState(false);
 
-  const toggleLike = useCallback((e) => {
-    e.stopPropagation();
-    setIsLike((prev) => !prev);
-    setIsActive(true);
-  }, [isLike]);
+  const { likeMutation, unLikeMutation } = useLike({ setIsLike });
+
+  const toggleLike = useCallback(
+    (e) => {
+      e.stopPropagation();
+      if (isLike) {
+        unLikeMutation.mutate(postData.boardId);
+      } else {
+        likeMutation.mutate(postData.boardId);
+      }
+      if (!isActive) setIsActive(true);
+    },
+    [isLike]
+  );
 
   return (
     <div className={styles.card}>
       <header>
         <section className={styles["user-info"]}>
           <ProfileImage size={40} />
-          <div className={styles.nickname}>{postData.user.nickname}</div>
+          <div className={styles.nickname}>{postData.username}</div>
         </section>
       </header>
       <section>
-        <PostImage imageUrl={postData.imageUrl} calories={postData.calories} />
+        <PostImage imageUrl={postData.foodImageUrl} />
       </section>
       <section className={styles["descript-section"]}>
         <div className={styles["post-info"]}>
           <div className={styles.icons}>
-            {isLike ? (
-              <div className={styles.heart} onClick={toggleLike}>
-                <HeartIcon className={isActive ? styles.active : ""} />
-              </div>
-            ) : (
-              <div className={styles.heart} onClick={toggleLike}>
-                <BlankHeartIcon
-                  className={isActive ? styles.active : ""}
-                  fill="#dadada"
-                />
-              </div>
+            {isLogin && showLike && (
+              <LikeButton
+                isLike={isLike}
+                isActive={isActive}
+                toggleLike={toggleLike}
+              />
             )}
-            <span>•</span>
-            <span>{postData.createdAt}</span>
+            {isLogin && showLike && <span>•</span>}
+            <span>{dayjs(postData.createdAt).fromNow()}</span>
           </div>
           <div className={styles.calorie}>
             <span>총</span>
-            <h1>1300</h1> <span>Cal</span>
+            <h1>{postData.kcal}</h1> <span>Cal</span>
           </div>
         </div>
         <div className={styles.hr} />
         <div className={styles.hashtags}>
-          {postData.hashtags.map((v, i) => (
-            <span key={i}>#{v}</span>
+          {postData.hashTag.map((v, i) => (
+            <span key={i} onClick={() => router.push(`/search/${v}`)}>
+              #{v}
+            </span>
           ))}
         </div>
       </section>

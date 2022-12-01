@@ -2,32 +2,30 @@ import CompleteButton from "components/custom/complete-button";
 import { dummyUser } from "dummy";
 import Image from "next/image";
 import React, { FormEvent, MouseEvent, useCallback, useEffect } from "react";
-import { useState } from "react";
 import styles from "styles/profile/profile-edit.module.scss";
 import EditIcon from "public/icons/edit.svg";
 import CameraIcon from "public/icons/camera.svg";
-import { useSelector } from "react-redux";
-import { RootState } from "reducer";
-import { useDispatch } from "react-redux";
-import profileSlice from "reducer/profile";
 import useModal from 'hooks/use-modal';
 import ProfileEditModal from 'components/modal/profile-edit';
+import { useRecoilState, useSetRecoilState } from 'recoil';
+import { heightAtom, nickNameAtom, weightAtom } from 'recoils/profile';
 const ProfileEditForm = () => {
   const uploadSubmit = useCallback((e: MouseEvent<HTMLButtonElement>) => {
     console.log("업로드 버튼 클릭");
   }, []);
   const {isOpen, onClose, setIsOpen}= useModal()
+  // react-query 로 유저 정보 요청
   const userData = dummyUser;
-  const { imageUrl, nickname, height, weight } = useSelector(
-    (state: RootState) => state.profile
-  );
-  const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(profileSlice.actions.deleteImageUrl(userData.profileURL));
-    dispatch(profileSlice.actions.setNickname(userData.nickname));
-    dispatch(profileSlice.actions.setHeight(userData.height));
-    dispatch(profileSlice.actions.setWeight(userData.weight));
-  }, []);
+
+  const [weight, setWeight] = useRecoilState(weightAtom);
+  const [height, setHeight] = useRecoilState(heightAtom);
+  const [nickname, setNickName] = useRecoilState(nickNameAtom);
+
+  useEffect(()=>{
+    setWeight(userData.weight);
+    setHeight(userData.height);
+    setNickName(userData.nickname);
+  },[]);
   
   return (
     <form
@@ -37,7 +35,7 @@ const ProfileEditForm = () => {
       <CompleteButton onClickHandler={uploadSubmit} isActive={false} />
       <section className={styles["img-wrapper"]}>
         {userData.profileURL ? (
-          <Image src={imageUrl} alt="profile-image" />
+          <Image src={userData.profileURL} alt="profile-image" />
         ) : (
           <Image
             src="/images/default-profile.png"
@@ -57,7 +55,7 @@ const ProfileEditForm = () => {
       </span>
       <div style={{ marginTop: 16 }} className={styles.box}>
         <span>연결된 이메일</span>
-        <p>{dummyUser.email}</p>
+        <p>{userData.email}</p>
       </div>
       <div className={`${styles.box}`}>
         <div>
