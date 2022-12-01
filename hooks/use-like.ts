@@ -16,7 +16,10 @@ const useLike = ({ setIsLike }: Props) => {
       setIsLike(false);
     },
     onSettled: () => {
-      queryClient.invalidateQueries(["likeList"]);
+      queryClient.invalidateQueries({
+        queryKey: ["likeList"],
+        refetchPage: (page, index) => index === 0,
+      });
       queryClient.invalidateQueries({
         queryKey: ["boardList"],
         refetchActive: false,
@@ -32,7 +35,9 @@ const useLike = ({ setIsLike }: Props) => {
       setIsLike(true);
     },
     onSettled: () => {
-      queryClient.invalidateQueries(["likeList"]);
+      queryClient.invalidateQueries(["likeList"], {
+        refetchPage: (page, index) => index === 0,
+      });
       queryClient.invalidateQueries({
         queryKey: ["boardList"],
         refetchActive: false,
