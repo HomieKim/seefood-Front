@@ -79,10 +79,7 @@ const UploadForm = () => {
       <CompleteButton
         onClickHandler={uploadSubmit}
         isActive={
-          imgValue !== null &&
-          categoryValue !== "" &&
-          tagsValue.length !== 0 &&
-          selectFoods.length !== 0
+          imgValue !== null && categoryValue !== "" && tagsValue.length !== 0
         }
       />
       <h4>식단 사진</h4>
